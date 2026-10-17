@@ -161,7 +161,7 @@ with PostgresSaver.from_conn_string(DB_URI) as checkpointer:  # [!code highlight
 
     <Tip>
     **Setup**
-    To use the [MongoDB checkpointer](https://pypi.org/project/langgraph-checkpoint-mongodb/), you will need a MongoDB cluster. Follow [this guide](https://www.mongodb.com/docs/guides/atlas/cluster/) to create a cluster if you don't already have one.
+    To use the [MongoDB checkpointer](https://pypi.org/project/langgraph-checkpoint-mongodb/), you will need a MongoDB cluster. Follow [this guide](https://www.mongodb.com/docs/guides/atlas/cluster/) to create a cluster if you don't already have one. For an agent-focused walkthrough, see [short-term memory with MongoDB Atlas](/oss/python/integrations/memory/mongodb-short-term-memory).
     </Tip>
 
     <Tabs>
@@ -547,8 +547,7 @@ Once you compile a graph with a store, LangGraph automatically injects the store
 from dataclasses import dataclass
 from langgraph.runtime import Runtime
 from langgraph.graph import StateGraph, MessagesState, START
-import uuid
-
+from langchain_core.utils.uuid import uuid7
 @dataclass
 class Context:
     user_id: str
@@ -567,7 +566,7 @@ async def call_model(state: MessagesState, runtime: Runtime[Context]):  # [!code
 
     # Store a new memory
     await runtime.store.aput(  # [!code highlight]
-        namespace, str(uuid.uuid4()), {"data": "User prefers dark mode"}
+        namespace, str(uuid7()), {"data": "User prefers dark mode"}
     )
 
 builder = StateGraph(MessagesState, context_schema=Context)  # [!code highlight]
@@ -621,7 +620,6 @@ with PostgresStore.from_conn_string(DB_URI) as store:  # [!code highlight]
       from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
       from langgraph.store.postgres.aio import AsyncPostgresStore  # [!code highlight]
       from langgraph.runtime import Runtime  # [!code highlight]
-      import uuid
 
       model = init_chat_model(model="claude-haiku-4-5-20251001")
 
@@ -643,7 +641,7 @@ with PostgresStore.from_conn_string(DB_URI) as store:  # [!code highlight]
           last_message = state["messages"][-1]
           if "remember" in last_message.content.lower():
               memory = "User name is Bob"
-              await runtime.store.aput(namespace, str(uuid.uuid4()), {"data": memory})  # [!code highlight]
+              await runtime.store.aput(namespace, str(uuid7()), {"data": memory})  # [!code highlight]
 
           response = await model.ainvoke(
               [{"role": "system", "content": system_msg}] + state["messages"]
@@ -699,7 +697,6 @@ with PostgresStore.from_conn_string(DB_URI) as store:  # [!code highlight]
       from langgraph.checkpoint.postgres import PostgresSaver
       from langgraph.store.postgres import PostgresStore  # [!code highlight]
       from langgraph.runtime import Runtime  # [!code highlight]
-      import uuid
 
       model = init_chat_model(model="claude-haiku-4-5-20251001")
 
@@ -721,7 +718,7 @@ with PostgresStore.from_conn_string(DB_URI) as store:  # [!code highlight]
           last_message = state["messages"][-1]
           if "remember" in last_message.content.lower():
               memory = "User name is Bob"
-              runtime.store.put(namespace, str(uuid.uuid4()), {"data": memory})  # [!code highlight]
+              runtime.store.put(namespace, str(uuid7()), {"data": memory})  # [!code highlight]
 
           response = model.invoke(
               [{"role": "system", "content": system_msg}] + state["messages"]
@@ -796,7 +793,6 @@ with PostgresStore.from_conn_string(DB_URI) as store:  # [!code highlight]
       from langgraph.checkpoint.redis.aio import AsyncRedisSaver
       from langgraph.store.redis.aio import AsyncRedisStore  # [!code highlight]
       from langgraph.runtime import Runtime  # [!code highlight]
-      import uuid
 
       model = init_chat_model(model="claude-haiku-4-5-20251001")
 
@@ -818,7 +814,7 @@ with PostgresStore.from_conn_string(DB_URI) as store:  # [!code highlight]
           last_message = state["messages"][-1]
           if "remember" in last_message.content.lower():
               memory = "User name is Bob"
-              await runtime.store.aput(namespace, str(uuid.uuid4()), {"data": memory})  # [!code highlight]
+              await runtime.store.aput(namespace, str(uuid7()), {"data": memory})  # [!code highlight]
 
           response = await model.ainvoke(
               [{"role": "system", "content": system_msg}] + state["messages"]
@@ -872,7 +868,6 @@ with PostgresStore.from_conn_string(DB_URI) as store:  # [!code highlight]
       from langgraph.checkpoint.redis import RedisSaver
       from langgraph.store.redis import RedisStore  # [!code highlight]
       from langgraph.runtime import Runtime  # [!code highlight]
-      import uuid
 
       model = init_chat_model(model="claude-haiku-4-5-20251001")
 
@@ -894,7 +889,7 @@ with PostgresStore.from_conn_string(DB_URI) as store:  # [!code highlight]
           last_message = state["messages"][-1]
           if "remember" in last_message.content.lower():
               memory = "User name is Bob"
-              runtime.store.put(namespace, str(uuid.uuid4()), {"data": memory})  # [!code highlight]
+              runtime.store.put(namespace, str(uuid7()), {"data": memory})  # [!code highlight]
 
           response = model.invoke(
               [{"role": "system", "content": system_msg}] + state["messages"]
@@ -961,7 +956,6 @@ with PostgresStore.from_conn_string(DB_URI) as store:  # [!code highlight]
     <Tabs>
         <Tab title="Sync">
       ```python
-      import uuid
 
       from langchain.chat_models import init_chat_model
       from langchain.embeddings import init_embeddings
@@ -1002,7 +996,7 @@ with PostgresStore.from_conn_string(DB_URI) as store:  # [!code highlight]
               last_message = state["messages"][-1]
               if "remember" in last_message.content.lower():
                   memory = "User name is Bob"
-                  store.put(namespace, str(uuid.uuid4()), {"data": memory})  # [!code highlight]
+                  store.put(namespace, str(uuid7()), {"data": memory})  # [!code highlight]
 
               response = model.invoke(
                   [{"role": "system", "content": system_msg}] + state["messages"]
@@ -1050,7 +1044,6 @@ with PostgresStore.from_conn_string(DB_URI) as store:  # [!code highlight]
         </Tab>
         <Tab title="Async">
       ```python
-      import uuid
 
       from langchain.chat_models import init_chat_model
       from langchain.embeddings import init_embeddings
@@ -1091,7 +1084,7 @@ with PostgresStore.from_conn_string(DB_URI) as store:  # [!code highlight]
               last_message = state["messages"][-1]
               if "remember" in last_message.content.lower():
                   memory = "User name is Bob"
-                  await store.aput(namespace, str(uuid.uuid4()), {"data": memory})  # [!code highlight]
+                  await store.aput(namespace, str(uuid7()), {"data": memory})  # [!code highlight]
 
               response = await model.ainvoke(
                   [{"role": "system", "content": system_msg}] + state["messages"]
@@ -1380,6 +1373,7 @@ When deleting messages, **make sure** that the resulting message history is vali
 
   checkpointer = InMemorySaver()
   app = builder.compile(checkpointer=checkpointer)
+  config = {"configurable": {"thread_id": "1"}}
 
   stream = app.stream_events(
       {"messages": [{"role": "user", "content": "hi! I'm bob"}]},
@@ -1817,7 +1811,7 @@ We recommend running migrations as a dedicated deployment step, or you can ensur
 
 <div className="source-links">
 <Callout icon="terminal-2">
-    [Connect these docs](/use-these-docs) to Claude, VSCode, and more via MCP for real-time answers.
+    [Connect these docs](/use-these-docs) to your agent of choice via MCP for real-time answers.
 </Callout>
 <Callout icon="edit">
     [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/add-memory.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

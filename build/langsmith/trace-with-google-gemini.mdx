@@ -65,7 +65,7 @@ def main():
 
     # Make a traced Gemini call
     response = client.models.generate_content(
-        model="gemini-2.5-flash",
+        model="gemini-3.8-flash",
         contents="Explain quantum computing in simple terms.",
     )
 
@@ -96,7 +96,7 @@ const client = wrapGemini(geminiClient, {
 
 // Make a traced call - tracing happens automatically
 const response = await client.models.generateContent({
-  model: "gemini-2.5-flash",
+  model: "gemini-3.8-flash",
   contents: "Explain quantum computing in simple terms.",
 });
 
@@ -144,7 +144,7 @@ After running your application, you can view traces in the [LangSmith UI](https:
 
 <div className="source-links">
 <Callout icon="terminal-2">
-    [Connect these docs](/use-these-docs) to Claude, VSCode, and more via MCP for real-time answers.
+    [Connect these docs](/use-these-docs) to your agent of choice via MCP for real-time answers.
 </Callout>
 <Callout icon="edit">
     [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/langsmith/trace-with-google-gemini.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).
